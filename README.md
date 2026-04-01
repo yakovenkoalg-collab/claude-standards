@@ -14,6 +14,7 @@
 | `new-api.md` | `/new-api` | Scaffold API endpoint (route + schema + OpenAPI) |
 | `new-page.md` | `/new-page` | Scaffold страницы App Router |
 | `preflight.md` | `/preflight` | Предпушевая проверка (tsc, build, tests, drift) |
+| `release.md` | `/release` | Полный пайплайн релиза (version, changelog, migrations, tests, push, deploy) |
 
 ### `modules/` — Инструкции по стеку
 Копируются в `docs/claude-modules/`. Ссылки добавляются в CLAUDE.md проекта.
