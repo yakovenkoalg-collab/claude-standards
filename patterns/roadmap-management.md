@@ -9,40 +9,41 @@
 {
   "meta": {
     "project": "moex-portal",
-    "lastUpdated": "2026-04-01",
-    "version": "0.29.4"
+    "lastUpdated": "2026-04-02",
+    "version": "0.31.0"
   },
   "waves": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Ядро",
-      "description": "MVP: команды, сотрудники, цели",
-      "status": "DONE"
+      "description": "MVP: команды, сотрудники, цели"
     }
   ],
   "tasks": [
     {
-      "id": "#1",
+      "id": "1",
       "title": "CRUD команд",
-      "wave": 1,
-      "status": "DONE",         // OPEN | IN_PROGRESS | DONE | CANCELLED
+      "wave": "1",
+      "status": "DONE",         // OPEN | DONE | CANCELLED | MERGED
       "version": "0.1.0",       // в какой версии выполнено
-      "priority": "HIGH",       // HIGH | MEDIUM | LOW
+      "priority": "HIGH",       // CRITICAL | HIGH | MEDIUM | LOW
+      "type": "business",       // business | tech
       "designDoc": "teams-design.md",
-      "dependencies": ["#2"],   // блокирующие задачи
-      "description": "...",
-      "tags": ["core", "api"]
+      "dependencies": ["2"],    // блокирующие задачи
+      "mergedInto": "1-2",      // только для MERGED — id объединённой задачи
+      "description": "..."
     }
   ]
 }
 ```
 
 ### roadmap.md (человекочитаемая версия)
-Генерируется из `roadmap.json` при каждом релизе. Содержит:
+**Автогенерируется** из `roadmap.json` скриптом `scripts/generate-roadmap-md.ts`.
+Содержит:
 - Сводную таблицу волн с прогрессом
 - Детальные таблицы задач по волнам
-- Граф зависимостей
-- Рекомендуемый порядок запуска
+- Открытые задачи с блокерами
+- Таблицу дизайн-документов
 
 ### version.ts (changelog)
 ```typescript
@@ -61,9 +62,9 @@ export const CHANGELOG = [
 | Статус | Когда |
 |--------|-------|
 | `OPEN` | Задача в бэклоге, не начата |
-| `IN_PROGRESS` | Активно разрабатывается (не более 2-3 одновременно) |
-| `DONE` | Вошла в релиз, есть `version` |
-| `CANCELLED` | Отменена (с указанием причины) |
+| `DONE` | Вошла в релиз, обязательно поле `version` |
+| `CANCELLED` | Отменена (с указанием причины в description) |
+| `MERGED` | Поглощена другой задачей, обязательно поле `mergedInto` |
 
 ### Волны
 - Волна = логическая группа связанных задач
@@ -78,9 +79,11 @@ export const CHANGELOG = [
 
 ### Релизный цикл
 При `/release`:
-1. Задачи `IN_PROGRESS` → `DONE` (если вошли в релиз) + указать `version`
-2. Пересчитать `roadmap.md` из `roadmap.json`
-3. Обновить сводку волн, прогресс, граф зависимостей
+1. Обновить `meta.version` и `meta.lastUpdated`
+2. Задачи `OPEN` → `DONE` (если вошли в релиз) + указать `version`
+3. Добавить новые задачи, если они реализованы, но отсутствуют в `tasks[]`
+4. Запустить `npx tsx scripts/check-roadmap-sync.ts` (CI-валидация)
+5. Запустить `npx tsx scripts/generate-roadmap-md.ts` (автогенерация roadmap.md)
 
 ### Стиль описания changelog
 - Писать **с точки зрения пользователя**: что он теперь может делать
